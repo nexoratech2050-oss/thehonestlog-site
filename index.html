@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>The Honest Log — calorie tracking that doesn't make you quit</title>
+<meta name="description" content="A calorie log built for people who quit calorie apps. Join the waitlist for early access and founder pricing.">
+<meta name="theme-color" content="#0B1F14">
+
+<!-- Sosyal onizleme: bagli paylasildiginda duzgun gorunsun -->
+<meta property="og:title" content="The Honest Log">
+<meta property="og:description" content="Calorie tracking that doesn't make you quit. Early access + founder pricing.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://thehonestlog.com/">
+<meta name="twitter:card" content="summary_large_image">
+
+<style>
+  :root{
+    --ink:#0B1F14; --ink2:#12291F; --line:#1E3A2C;
+    --green:#22c55e; --green2:#16a34a;
+    --txt:#EAF6EF; --txt2:#9DB6A9; --txt3:#6F8B7C;
+    --err:#F87171;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--ink); color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55; -webkit-font-smoothing:antialiased;
+    display:flex; flex-direction:column; min-height:100dvh;
+  }
+  .wrap{width:100%;max-width:560px;margin:0 auto;padding:40px 22px 28px;flex:1}
+
+  /* marka */
+  .brand{display:flex;align-items:center;gap:11px;margin-bottom:38px}
+  .brand .mark{width:44px;height:44px;flex:0 0 auto}
+  .brand .name{font-size:16px;font-weight:800;letter-spacing:-.2px}
+
+  h1{font-size:34px;line-height:1.15;font-weight:800;letter-spacing:-1px;margin-bottom:14px}
+  h1 em{font-style:normal;color:var(--green)}
+  .lede{font-size:16.5px;color:var(--txt2);margin-bottom:30px}
+
+  /* form */
+  form{display:flex;flex-direction:column;gap:11px;margin-bottom:14px}
+  label{font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--txt3)}
+  input[type=email]{
+    width:100%;padding:15px 16px;font-size:16px;   /* 16px: iOS'ta odaklaninca zoom yapmasin */
+    background:var(--ink2);border:1px solid var(--line);border-radius:12px;color:var(--txt);
+    font-family:inherit;
+  }
+  input[type=email]::placeholder{color:var(--txt3)}
+  input[type=email]:focus{outline:none;border-color:var(--green);background:#16352697}
+
+  .seg{display:flex;gap:9px}
+  .seg button{
+    flex:1;padding:13px 8px;font-size:14.5px;font-weight:600;font-family:inherit;cursor:pointer;
+    background:var(--ink2);border:1px solid var(--line);border-radius:12px;color:var(--txt2);
+  }
+  .seg button[aria-pressed=true]{border-color:var(--green);color:var(--txt);background:#1a3d2b}
+
+  .go{
+    padding:16px;font-size:16.5px;font-weight:800;font-family:inherit;cursor:pointer;
+    background:var(--green);border:0;border-radius:12px;color:#06180F;letter-spacing:-.2px;
+  }
+  .go:disabled{opacity:.55;cursor:default}
+
+  .fine{font-size:12.5px;color:var(--txt3);margin-bottom:34px}
+  .msg{font-size:14px;padding:12px 14px;border-radius:11px;margin-bottom:14px;display:none}
+  .msg.bad{display:block;background:#3A1414;border:1px solid #5C2020;color:#FFD9D9}
+
+  /* noktalar */
+  .pts{border-top:1px solid var(--line);padding-top:26px;display:flex;flex-direction:column;gap:17px}
+  .pt{display:flex;gap:12px;align-items:flex-start}
+  .pt .tick{color:var(--green);font-weight:800;flex:0 0 auto;line-height:1.5}
+  .pt b{display:block;font-size:15px;font-weight:700;margin-bottom:2px}
+  .pt span{font-size:14px;color:var(--txt2)}
+
+  .honest{
+    margin-top:28px;padding:15px 16px;background:var(--ink2);
+    border:1px solid var(--line);border-left:3px solid var(--green);border-radius:11px;
+    font-size:13.5px;color:var(--txt2)
+  }
+  .honest b{color:var(--txt)}
+
+  footer{
+    border-top:1px solid var(--line);padding:20px 22px 30px;
+    font-size:13px;color:var(--txt3);text-align:center
+  }
+  footer a{color:var(--txt2);text-decoration:none;border-bottom:1px solid var(--line)}
+
+  /* tesekkur ekrani */
+  .done{display:none;text-align:center;padding:22px 0}
+  .done .big{font-size:46px;margin-bottom:14px}
+  .done h2{font-size:23px;font-weight:800;letter-spacing:-.4px;margin-bottom:10px}
+  .done p{font-size:15.5px;color:var(--txt2);max-width:400px;margin:0 auto 8px}
+  body.sent .hide-on-sent{display:none}
+  body.sent .done{display:block}
+
+  @media(min-width:600px){ h1{font-size:41px} .wrap{padding-top:60px} }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="brand">
+    <!-- Monogram SVG olarak gomulu: dis dosya yok, her boyutta net -->
+    <svg class="mark" viewBox="0 0 100 100" aria-label="The Honest Log">
+      <rect width="100" height="100" rx="22" fill="#22c55e"/>
+      <circle cx="50" cy="50" r="38" fill="#0B1F14"/>
+      <text x="50" y="50" fill="#22c55e" font-family="Arial Black,Arial,sans-serif"
+            font-size="31" font-weight="900" text-anchor="middle" dominant-baseline="central"
+            letter-spacing="-1">THL</text>
+    </svg>
+    <div class="name">The Honest Log</div>
+  </div>
+
+  <div class="hide-on-sent">
+    <h1>Calorie tracking that <em>doesn't make you quit.</em></h1>
+    <p class="lede">Most people don't stop tracking because they stop caring.
+      They stop because logging one meal takes two minutes and a bad day erases a streak.
+      We're building the version that survives real life.</p>
+
+    <div class="msg" id="err"></div>
+
+    <form id="f" novalidate>
+      <label for="email">Get early access</label>
+      <input id="email" type="email" name="email" placeholder="you@email.com"
+             autocomplete="email" inputmode="email" required>
+
+      <label for="seg" style="margin-top:6px">Which phone do you use?</label>
+      <div class="seg" id="seg" role="group">
+        <button type="button" data-v="ios" aria-pressed="false">iPhone</button>
+        <button type="button" data-v="android" aria-pressed="false">Android</button>
+      </div>
+
+      <button class="go" type="submit" id="go">Join the waitlist</button>
+    </form>
+
+    <p class="fine">Founding members lock the launch price — for as long as they stay.
+      We email you once when it opens. Nothing else, ever.</p>
+
+    <div class="pts">
+      <div class="pt"><span class="tick">✓</span><div>
+        <b>No streaks to lose</b>
+        <span>Miss a day and nothing resets. The one mechanic that makes people delete the app is gone.</span>
+      </div></div>
+      <div class="pt"><span class="tick">✓</span><div>
+        <b>Log a meal in about ten seconds</b>
+        <span>Say it or snap it. No searching a database for "chicken breast, raw, boneless".</span>
+      </div></div>
+      <div class="pt"><span class="tick">✓</span><div>
+        <b>Numbers you can check</b>
+        <span>Every estimate shows where it came from, so you can correct it instead of trusting it.</span>
+      </div></div>
+    </div>
+
+    <div class="honest">
+      <b>Straight answer on Android:</b> we're starting on iPhone, because shipping one good app
+      beats shipping two rough ones. Android is planned, not promised. Pick Android above and
+      you'll be first in line — and you move it up the list.
+    </div>
+  </div>
+
+  <div class="done">
+    <div class="big">✅</div>
+    <h2>You're on the list.</h2>
+    <p id="doneMsg">We'll email you once, when early access opens.</p>
+    <p style="color:var(--txt3);font-size:13.5px;margin-top:14px">
+      Nothing else to do. You can close this page.</p>
+  </div>
+
+</div>
+
+<footer>
+  <a href="mailto:hello@thehonestlog.com">hello@thehonestlog.com</a>
+  &nbsp;·&nbsp; @thehonestlog
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  // Kurulum betigi (kur.js) bu iki yer tutucuyu gercek degerlerle degistirir.
+  // 🔴 Anahtar KAYNAK DOSYADA DURMAZ — boylece yanlislikla herkese acik depoya girmez.
+  var SB_URL  = 'https://xemcxthcggzgylfpxicb.supabase.co';
+  var SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlbWN4dGhjZ2d6Z3lsZnB4aWNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3NTQxODAsImV4cCI6MjA5MjMzMDE4MH0.pIkEPVLZrPTmxldJHnWKbnXSugVDZVdzNiysMHO4ijo';
+  var KURULU  = SB_URL.indexOf('__') !== 0 && SB_ANON.indexOf('__') !== 0;
+
+  var f = document.getElementById('f');
+  var email = document.getElementById('email');
+  var go = document.getElementById('go');
+  var err = document.getElementById('err');
+  var seg = document.getElementById('seg');
+  var secilenPlatform = '';
+
+  seg.addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-v]');
+    if (!b) return;
+    secilenPlatform = (b.getAttribute('aria-pressed') === 'true') ? '' : b.dataset.v;
+    [].forEach.call(seg.children, function (x) {
+      x.setAttribute('aria-pressed', String(x.dataset.v === secilenPlatform));
+    });
+  });
+
+  function hata(mesaj) {
+    err.textContent = mesaj;
+    err.className = 'msg bad';
+    go.disabled = false;
+    go.textContent = 'Join the waitlist';
+  }
+
+  // Hangi platformdan geldigi: ?utm_source=instagram
+  function kaynak() {
+    try {
+      var u = new URLSearchParams(location.search);
+      return (u.get('utm_source') || '').slice(0, 40).toLowerCase();
+    } catch (e) { return ''; }
+  }
+
+  f.addEventListener('submit', function (e) {
+    e.preventDefault();
+    err.className = 'msg';
+
+    var deger = email.value.trim();
+    // Kasitli olarak GEVSEK dogrulama: gercek adresleri reddetmektense
+    // birkac hatali kayit kabul etmek daha ucuz.
+    if (!deger || deger.indexOf('@') < 1 || deger.indexOf('.', deger.indexOf('@')) < 0) {
+      hata('That email address does not look right. Mind checking it?');
+      email.focus();
+      return;
+    }
+
+    // 🔴 Bagli degilse BASARILI GIBI DAVRANMA. Sessizce kaybolan bir e-posta,
+    //    hic alinmamis bir e-postadan daha kotudur.
+    if (!KURULU) {
+      hata('Signups are not switched on yet. Please try again shortly.');
+      return;
+    }
+
+    go.disabled = true;
+    go.textContent = 'Adding you…';
+
+    fetch(SB_URL + '/rest/v1/waitlist', {
+      method: 'POST',
+      headers: {
+        'apikey': SB_ANON,
+        'Authorization': 'Bearer ' + SB_ANON,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        email: deger.toLowerCase(),
+        platform: secilenPlatform || null,
+        utm_source: kaynak() || null
+      })
+    }).then(function (r) {
+      // 409 = ayni e-posta zaten kayitli. Kullanici acisindan bu BASARIDIR;
+      // "zaten kayitlisin" demek gereksiz surtunme yaratir.
+      if (r.ok || r.status === 409) {
+        if (secilenPlatform === 'android') {
+          document.getElementById('doneMsg').textContent =
+            'We’ll email you once, when early access opens. Your Android vote is counted.';
+        }
+        document.body.classList.add('sent');
+        window.scrollTo(0, 0);
+        return;
+      }
+      hata('Something went wrong on our side. Please try again in a minute.');
+    }).catch(function () {
+      hata('Could not reach the server. Check your connection and try again.');
+    });
+  });
+})();
+</script>
+</body>
+</html>
