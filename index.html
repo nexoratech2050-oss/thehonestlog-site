@@ -4,236 +4,363 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>The Honest Log — calorie tracking that doesn't make you quit</title>
-<meta name="description" content="A calorie log built for people who quit calorie apps. Join the waitlist for early access and founder pricing.">
-<meta name="theme-color" content="#0B1F14">
-
-<!-- Sosyal onizleme: bagli paylasildiginda duzgun gorunsun -->
+<meta name="description" content="A calorie log built for people who quit calorie apps. We read 4,510 one-star reviews. Join the waitlist for early access.">
+<meta name="theme-color" content="#0F1614">
 <meta property="og:title" content="The Honest Log">
-<meta property="og:description" content="Calorie tracking that doesn't make you quit. Early access + founder pricing.">
+<meta property="og:description" content="Most people don't quit calorie apps because they stop caring. We're building the version that survives real life.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://thehonestlog.com/">
 <meta name="twitter:card" content="summary_large_image">
-
 <style>
+  /* ─────────────────────────────────────────────────────────────
+     TOKENS — light-first, mirrored for dark
+     Not pure black/white: paper is warm-cream shifted toward the
+     brand green; ink is a deep green-black.
+     ───────────────────────────────────────────────────────────── */
   :root{
-    --ink:#0B1F14; --ink2:#12291F; --line:#1E3A2C;
-    --green:#22c55e; --green2:#16a34a;
-    --txt:#EAF6EF; --txt2:#9DB6A9; --txt3:#6F8B7C;
-    --err:#F87171;
+    --paper:#F5F1E8;
+    --paper-2:#EBE6D9;
+    --ink:#0F1614;
+    --ink-2:#2A3532;
+    --muted:#5D6C67;
+    --rule:#DDD6C4;
+    --brand:#1F8F5C;              /* deeper than the marker green, editorial */
+    --brand-loud:#22C55E;          /* the brand mark's exact green — used only inside the mark */
+    --warn:#B34A3B;                /* rust, not red-red */
+    --focus:#8FA79E;
   }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#0F1614; --paper-2:#182420;
+      --ink:#EFEAD9; --ink-2:#C8C1AE;
+      --muted:#8FA098;
+      --rule:#22302C;
+      --brand:#4FD290;
+      --warn:#E48A7B;
+    }
+  }
+  :root[data-theme="light"]{
+    --paper:#F5F1E8; --paper-2:#EBE6D9;
+    --ink:#0F1614; --ink-2:#2A3532;
+    --muted:#5D6C67; --rule:#DDD6C4;
+    --brand:#1F8F5C; --warn:#B34A3B;
+  }
+  :root[data-theme="dark"]{
+    --paper:#0F1614; --paper-2:#182420;
+    --ink:#EFEAD9; --ink-2:#C8C1AE;
+    --muted:#8FA098; --rule:#22302C;
+    --brand:#4FD290; --warn:#E48A7B;
+  }
+
   *{box-sizing:border-box;margin:0;padding:0}
   html{-webkit-text-size-adjust:100%}
   body{
-    background:var(--ink); color:var(--txt);
+    background:var(--paper); color:var(--ink);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    line-height:1.55; -webkit-font-smoothing:antialiased;
-    display:flex; flex-direction:column; min-height:100dvh;
+    font-size:16.5px; line-height:1.55;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    font-feature-settings:"kern","liga","calt";
   }
-  .wrap{width:100%;max-width:560px;margin:0 auto;padding:40px 22px 28px;flex:1}
+  ::selection{background:var(--brand);color:var(--paper)}
 
-  /* marka */
-  .brand{display:flex;align-items:center;gap:11px;margin-bottom:38px}
-  .brand .mark{width:44px;height:44px;flex:0 0 auto}
-  .brand .name{font-size:16px;font-weight:800;letter-spacing:-.2px}
+  /* Serif for the editorial hierarchy — Iowan/Palatino gives humanist warmth
+     without falling into the Georgia/Fraunces AI-default look. */
+  .serif{font-family:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;font-feature-settings:"kern","liga","onum"}
 
-  h1{font-size:34px;line-height:1.15;font-weight:800;letter-spacing:-1px;margin-bottom:14px}
-  h1 em{font-style:normal;color:var(--green)}
-  .lede{font-size:16.5px;color:var(--txt2);margin-bottom:30px}
+  /* Layout — 640px editorial reading column, left-aligned throughout.
+     No centered heroes, no cards, no rounded pills.  */
+  .wrap{max-width:640px;padding:36px 24px 96px;margin:0 auto}
+  @media(min-width:720px){.wrap{padding:56px 24px 120px}}
 
-  /* form */
-  form{display:flex;flex-direction:column;gap:11px;margin-bottom:14px}
-  label{font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--txt3)}
+  /* Top bar — mark on the left, theme toggle far right. Restrained. */
+  .top{display:flex;align-items:center;gap:12px;margin-bottom:96px}
+  .mark{width:34px;height:34px;flex:0 0 auto}
+  .mark rect{fill:var(--brand-loud)}
+  .mark circle{fill:var(--ink)}
+  .mark text{fill:var(--brand-loud);font-family:-apple-system,Arial Black,sans-serif;font-weight:900;letter-spacing:-1px}
+  @media (prefers-color-scheme: dark){.mark rect{fill:var(--brand)}.mark circle{fill:#0F1614}.mark text{fill:var(--brand)}}
+  :root[data-theme="dark"] .mark rect{fill:var(--brand)} :root[data-theme="dark"] .mark circle{fill:#0F1614} :root[data-theme="dark"] .mark text{fill:var(--brand)}
+  :root[data-theme="light"] .mark rect{fill:#22C55E} :root[data-theme="light"] .mark circle{fill:#0F1614} :root[data-theme="light"] .mark text{fill:#22C55E}
+  .brand-name{font-size:14px;letter-spacing:.02em;color:var(--ink-2)}
+  .top .push{margin-left:auto}
+  .toggle{
+    font:12px/1 inherit;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--muted);background:none;border:1px solid var(--rule);
+    padding:8px 12px;cursor:pointer;
+  }
+  .toggle:hover{color:var(--ink);border-color:var(--ink-2)}
+
+  /* Section rhythm — uppercase label + hairline is the only structural device. */
+  section{margin-top:72px}
+  .label{
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);display:flex;align-items:center;gap:12px;margin-bottom:24px;
+  }
+  .label::after{content:"";flex:1;height:1px;background:var(--rule)}
+
+  /* Hero — statement, not pitch. Serif at scale. */
+  h1{
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    font-weight:400; font-size:42px; line-height:1.06; letter-spacing:-.015em;
+    text-wrap:balance; margin-bottom:22px;
+  }
+  h1 em{font-style:italic;color:var(--brand)}
+  @media(min-width:720px){h1{font-size:56px}}
+  .lede{font-size:18px;line-height:1.55;color:var(--ink-2);max-width:34em;margin-bottom:28px}
+  .lede + .lede{margin-top:16px}
+
+  a.link{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--brand);padding-bottom:1px;transition:border-color .2s}
+  a.link:hover{border-color:var(--ink)}
+
+  /* The data section — the personality of the page.
+     Left-aligned tabular list, no bar charts, no colors — the numbers are the point. */
+  h2{
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    font-weight:400; font-size:28px; line-height:1.15; letter-spacing:-.01em;
+    text-wrap:balance; margin-bottom:16px;
+  }
+  h2 .num{font-variant-numeric:tabular-nums lining-nums}
+  .kicker{color:var(--muted);font-size:14px;margin-bottom:8px;font-style:italic}
+  ol.grievances{list-style:none;margin:24px 0 12px;border-top:1px solid var(--rule)}
+  ol.grievances li{
+    display:grid;grid-template-columns:2ch 1fr auto;gap:16px;
+    padding:14px 0;border-bottom:1px solid var(--rule);
+    align-items:baseline;
+  }
+  ol.grievances li .rank{color:var(--muted);font-variant-numeric:tabular-nums;font-size:14px}
+  ol.grievances li .what{color:var(--ink)}
+  ol.grievances li .count{
+    color:var(--ink-2);font-variant-numeric:tabular-nums lining-nums;
+    font-size:15px;font-family:"Iowan Old Style",Palatino,Georgia,serif;
+  }
+  .footnote{color:var(--muted);font-size:14px;margin-top:12px}
+
+  /* Pact — the editorial risk. Negatively framed promises. */
+  .pact{margin-top:8px}
+  .pact article{padding:20px 0;border-bottom:1px solid var(--rule)}
+  .pact article:first-child{border-top:1px solid var(--rule)}
+  .pact h3{
+    font-family:"Iowan Old Style",Palatino,Georgia,serif;
+    font-weight:400;font-size:19px;line-height:1.3;margin-bottom:6px;
+  }
+  .pact h3 .no{color:var(--warn);font-style:italic;letter-spacing:.02em}
+  .pact p{color:var(--ink-2);font-size:15.5px;max-width:34em}
+
+  /* What it is — three plain lines. No feature icons. */
+  ul.plain{list-style:none;margin-top:18px}
+  ul.plain li{padding:14px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:baseline}
+  ul.plain li::before{content:attr(data-n);font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px}
+  ul.plain li b{display:block;font-weight:600;margin-bottom:2px}
+  ul.plain li span{color:var(--ink-2);font-size:15px}
+
+  /* Form — a small pact, not a lead-gen box. */
+  form{margin-top:24px;display:flex;flex-direction:column;gap:14px;max-width:420px}
+  label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
   input[type=email]{
-    width:100%;padding:15px 16px;font-size:16px;   /* 16px: iOS'ta odaklaninca zoom yapmasin */
-    background:var(--ink2);border:1px solid var(--line);border-radius:12px;color:var(--txt);
-    font-family:inherit;
+    font:inherit;font-size:16px;color:var(--ink);
+    background:transparent;border:0;border-bottom:1px solid var(--ink-2);
+    padding:12px 2px;transition:border-color .2s;
   }
-  input[type=email]::placeholder{color:var(--txt3)}
-  input[type=email]:focus{outline:none;border-color:var(--green);background:#16352697}
-
-  .seg{display:flex;gap:9px}
+  input[type=email]:focus{outline:none;border-color:var(--brand)}
+  input[type=email]::placeholder{color:var(--muted)}
+  .seg{display:flex;gap:0}
   .seg button{
-    flex:1;padding:13px 8px;font-size:14.5px;font-weight:600;font-family:inherit;cursor:pointer;
-    background:var(--ink2);border:1px solid var(--line);border-radius:12px;color:var(--txt2);
+    flex:1;padding:12px 8px;font:14px/1 inherit;font-weight:500;
+    background:transparent;color:var(--ink-2);cursor:pointer;
+    border:1px solid var(--rule);
   }
-  .seg button[aria-pressed=true]{border-color:var(--green);color:var(--txt);background:#1a3d2b}
-
+  .seg button + button{border-left:0}
+  .seg button:hover{color:var(--ink);background:var(--paper-2)}
+  .seg button[aria-pressed=true]{color:var(--paper);background:var(--ink);border-color:var(--ink)}
   .go{
-    padding:16px;font-size:16.5px;font-weight:800;font-family:inherit;cursor:pointer;
-    background:var(--green);border:0;border-radius:12px;color:#06180F;letter-spacing:-.2px;
+    align-self:flex-start;margin-top:8px;
+    font:14px/1 inherit;letter-spacing:.06em;text-transform:uppercase;font-weight:600;
+    background:var(--ink);color:var(--paper);border:0;padding:16px 22px;cursor:pointer;
+    transition:background .15s;
   }
-  .go:disabled{opacity:.55;cursor:default}
+  .go:hover{background:var(--brand)}
+  .fine{font-size:14px;color:var(--muted);margin-top:16px;line-height:1.55;max-width:34em;font-style:italic}
+  .thanks{display:none;padding:16px 0;color:var(--brand);border-top:1px solid var(--brand);border-bottom:1px solid var(--brand);font-family:"Iowan Old Style",Palatino,Georgia,serif;font-size:17px}
+  body.sent form{display:none} body.sent .thanks{display:block}
 
-  .fine{font-size:12.5px;color:var(--txt3);margin-bottom:34px}
-  .msg{font-size:14px;padding:12px 14px;border-radius:11px;margin-bottom:14px;display:none}
-  .msg.bad{display:block;background:#3A1414;border:1px solid #5C2020;color:#FFD9D9}
+  /* Footer — small, honest. */
+  footer{margin-top:96px;padding-top:24px;border-top:1px solid var(--rule);color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  footer a{color:inherit;text-decoration:none;border-bottom:1px dotted var(--muted)}
 
-  /* noktalar */
-  .pts{border-top:1px solid var(--line);padding-top:26px;display:flex;flex-direction:column;gap:17px}
-  .pt{display:flex;gap:12px;align-items:flex-start}
-  .pt .tick{color:var(--green);font-weight:800;flex:0 0 auto;line-height:1.5}
-  .pt b{display:block;font-size:15px;font-weight:700;margin-bottom:2px}
-  .pt span{font-size:14px;color:var(--txt2)}
-
-  .honest{
-    margin-top:28px;padding:15px 16px;background:var(--ink2);
-    border:1px solid var(--line);border-left:3px solid var(--green);border-radius:11px;
-    font-size:13.5px;color:var(--txt2)
-  }
-  .honest b{color:var(--txt)}
-
-  footer{
-    border-top:1px solid var(--line);padding:20px 22px 30px;
-    font-size:13px;color:var(--txt3);text-align:center
-  }
-  footer a{color:var(--txt2);text-decoration:none;border-bottom:1px solid var(--line)}
-
-  /* tesekkur ekrani */
-  .done{display:none;text-align:center;padding:22px 0}
-  .done .big{font-size:46px;margin-bottom:14px}
-  .done h2{font-size:23px;font-weight:800;letter-spacing:-.4px;margin-bottom:10px}
-  .done p{font-size:15.5px;color:var(--txt2);max-width:400px;margin:0 auto 8px}
-  body.sent .hide-on-sent{display:none}
-  body.sent .done{display:block}
-
-  @media(min-width:600px){ h1{font-size:41px} .wrap{padding-top:60px} }
+  /* Error banner — only shows when submit fails */
+  .err-banner{display:none;padding:14px 0;border-top:1px solid var(--warn);border-bottom:1px solid var(--warn);color:var(--warn);font-size:15px;font-family:"Iowan Old Style",Palatino,Georgia,serif;margin-top:12px}
+  .err-banner.on{display:block}
 </style>
 </head>
 <body>
 
 <div class="wrap">
 
-  <div class="brand">
-    <!-- Monogram SVG olarak gomulu: dis dosya yok, her boyutta net -->
+  <div class="top">
     <svg class="mark" viewBox="0 0 100 100" aria-label="The Honest Log">
-      <rect width="100" height="100" rx="22" fill="#22c55e"/>
-      <circle cx="50" cy="50" r="38" fill="#0B1F14"/>
-      <text x="50" y="50" fill="#22c55e" font-family="Arial Black,Arial,sans-serif"
-            font-size="31" font-weight="900" text-anchor="middle" dominant-baseline="central"
-            letter-spacing="-1">THL</text>
+      <rect width="100" height="100" rx="18"/>
+      <circle cx="50" cy="50" r="36"/>
+      <text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-size="30" letter-spacing="-1">THL</text>
     </svg>
-    <div class="name">The Honest Log</div>
+    <span class="brand-name">The Honest Log</span>
+    <span class="push"></span>
+    <button class="toggle" id="tgl" aria-label="Tema değiştir">Dark</button>
   </div>
 
-  <div class="hide-on-sent">
-    <h1>Calorie tracking that <em>doesn't make you quit.</em></h1>
-    <p class="lede">Most people don't stop tracking because they stop caring.
-      They stop because logging one meal takes two minutes and a bad day erases a streak.
-      We're building the version that survives real life.</p>
+  <!-- ─────────  §01 · STATEMENT  ───────── -->
+  <section style="margin-top:0">
+    <h1>
+      Most people don't quit calorie apps because they <em>stop caring.</em>
+    </h1>
+    <p class="lede">
+      They quit because logging one meal takes two minutes, a bad day erases a streak,
+      and the app they trusted quietly moved its best feature behind a paywall.
+    </p>
+    <p class="lede">
+      We're building the version that survives real life.
+      <a class="link" href="#join">Join the waitlist &rarr;</a>
+    </p>
+  </section>
 
-    <div class="msg" id="err"></div>
+  <!-- ─────────  §02 · THE DATA  ───────── -->
+  <section>
+    <div class="label">§ 02 · what the reviews said</div>
+    <h2>
+      We read <span class="num">4,510</span> one-star reviews of the top diet apps.
+      Here's what people actually complained about.
+    </h2>
+    <p class="kicker">Ranked by count. It's mostly the same five things.</p>
 
-    <form id="f" novalidate>
-      <label for="email">Get early access</label>
-      <input id="email" type="email" name="email" placeholder="you@email.com"
-             autocomplete="email" inputmode="email" required>
+    <ol class="grievances" aria-label="Top complaints">
+      <li><span class="rank">01</span><span class="what">Billing surprises &amp; hard-to-cancel subscriptions</span><span class="count">759</span></li>
+      <li><span class="rank">02</span><span class="what">An update removed a feature people relied on</span><span class="count">711</span></li>
+      <li><span class="rank">03</span><span class="what">Generic or wrong coaching advice</span><span class="count">602</span></li>
+      <li><span class="rank">04</span><span class="what">Ads &amp; upsell notifications in a paid app</span><span class="count">414</span></li>
+      <li><span class="rank">05</span><span class="what">Wrong calories or barcode scanner behind a paywall</span><span class="count">373</span></li>
+    </ol>
+    <p class="footnote">Nobody complained about the design. People leave because it charged them, changed on them, or told them something they knew was wrong.</p>
+  </section>
+
+  <!-- ─────────  §03 · THE PACT (negatively framed — the editorial risk) ───────── -->
+  <section>
+    <div class="label">§ 03 · the pact</div>
+    <h2>Here's what <em>won't</em> happen.</h2>
+
+    <div class="pact">
+      <article>
+        <h3><span class="no">No.</span> There is no streak to break.</h3>
+        <p>Miss a day and nothing resets. The one mechanic that makes people delete the app is not in this one.</p>
+      </article>
+      <article>
+        <h3><span class="no">No.</span> Your first entry is not a search box.</h3>
+        <p>Say it or snap it. No hunting a database for "chicken breast, raw, boneless, one." Ten seconds per meal, most of the time.</p>
+      </article>
+      <article>
+        <h3><span class="no">No.</span> Every number shows its source.</h3>
+        <p>Every estimate is checkable — brand label, USDA entry, your correction. You can trust the ones you audited, ignore the ones you didn't.</p>
+      </article>
+      <article>
+        <h3><span class="no">No.</span> Your best feature will not move behind a paywall.</h3>
+        <p>What you sign up for is what you get. If we ever charge for it, we tell you first and never quietly move an existing feature.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ─────────  §04 · WHAT IT IS  ───────── -->
+  <section>
+    <div class="label">§ 04 · what it is, in three lines</div>
+    <ul class="plain">
+      <li data-n="i."><b>A log, not a coach.</b><span>It records what you ate and shows you the numbers. It does not tell you what to want.</span></li>
+      <li data-n="ii."><b>Built for busy days, not perfect ones.</b><span>Optimised for the 3-minute meal you're eating at your desk, not the plated one you photograph.</span></li>
+      <li data-n="iii."><b>Numbers you can check.</b><span>Every calorie estimate shows its source — brand label, USDA entry, your own correction. Trust the ones you audited; ignore the ones you didn't.</span></li>
+    </ul>
+  </section>
+
+  <!-- ─────────  §05 · FORM  ───────── -->
+  <section id="join">
+    <div class="label">§ 05 · early access</div>
+    <h2>Be the first ones in.</h2>
+    <p class="lede">One email when it opens. That's the entire mailing list.</p>
+
+    <form id="f" onsubmit="return false">
+      <label for="email">Email</label>
+      <input id="email" type="email" placeholder="you@email.com" autocomplete="email" required>
 
       <label for="seg" style="margin-top:6px">Which phone do you use?</label>
-      <div class="seg" id="seg" role="group">
+      <div class="seg" role="group" id="seg">
         <button type="button" data-v="ios" aria-pressed="false">iPhone</button>
         <button type="button" data-v="android" aria-pressed="false">Android</button>
       </div>
 
-      <button class="go" type="submit" id="go">Join the waitlist</button>
+      <button class="go" type="submit">Join the waitlist</button>
     </form>
 
-    <p class="fine">Founding members lock the launch price — for as long as they stay.
-      We email you once when it opens. Nothing else, ever.</p>
+    <div class="thanks" id="thanks">You're on the list. We'll email you once, when it opens.</div>
+    <div class="err-banner" id="err"></div>
 
-    <div class="pts">
-      <div class="pt"><span class="tick">✓</span><div>
-        <b>No streaks to lose</b>
-        <span>Miss a day and nothing resets. The one mechanic that makes people delete the app is gone.</span>
-      </div></div>
-      <div class="pt"><span class="tick">✓</span><div>
-        <b>Log a meal in about ten seconds</b>
-        <span>Say it or snap it. No searching a database for "chicken breast, raw, boneless".</span>
-      </div></div>
-      <div class="pt"><span class="tick">✓</span><div>
-        <b>Numbers you can check</b>
-        <span>Every estimate shows where it came from, so you can correct it instead of trusting it.</span>
-      </div></div>
-    </div>
+    <p class="fine">
+      Straight answer on Android: we're starting on iPhone because shipping one good app beats shipping two rough ones.
+      Android is planned, not promised. Choose Android above and you're first in line — and it moves up the list.
+    </p>
+  </section>
 
-    <div class="honest">
-      <b>Straight answer on Android:</b> we're starting on iPhone, because shipping one good app
-      beats shipping two rough ones. Android is planned, not promised. Pick Android above and
-      you'll be first in line — and you move it up the list.
-    </div>
-  </div>
-
-  <div class="done">
-    <div class="big">✅</div>
-    <h2>You're on the list.</h2>
-    <p id="doneMsg">We'll email you once, when early access opens.</p>
-    <p style="color:var(--txt3);font-size:13.5px;margin-top:14px">
-      Nothing else to do. You can close this page.</p>
-  </div>
-
+  <footer>
+    <span>© 2026 The Honest Log</span>
+    <a href="mailto:hello@thehonestlog.com">hello@thehonestlog.com</a>
+  </footer>
 </div>
 
-<footer>
-  <a href="mailto:hello@thehonestlog.com">hello@thehonestlog.com</a>
-  &nbsp;·&nbsp; @thehonestlog
-</footer>
-
 <script>
-(function () {
-  'use strict';
+  // Theme toggle — stamps data-theme on :root, which overrides the media query.
+  var kok = document.documentElement;
+  var btn = document.getElementById('tgl');
+  function tema(t){ kok.setAttribute('data-theme', t); btn.textContent = t === 'dark' ? 'Light' : 'Dark'; }
+  btn.addEventListener('click', function(){
+    var suan = kok.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    tema(suan === 'dark' ? 'light' : 'dark');
+  });
 
-  // Kurulum betigi (kur.js) bu iki yer tutucuyu gercek degerlerle degistirir.
-  // 🔴 Anahtar KAYNAK DOSYADA DURMAZ — boylece yanlislikla herkese acik depoya girmez.
+  // Segment
+  var seg = document.getElementById('seg');
+  var secilen = '';
+  seg.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-v]'); if(!b) return;
+    secilen = (b.getAttribute('aria-pressed') === 'true') ? '' : b.dataset.v;
+    Array.prototype.forEach.call(seg.children, function(x){ x.setAttribute('aria-pressed', String(x.dataset.v === secilen)); });
+  });
+
+  // Form — Supabase'e gercek POST. Yer tutucular kur.js tarafindan enjekte edilir.
   var SB_URL  = 'https://xemcxthcggzgylfpxicb.supabase.co';
   var SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlbWN4dGhjZ2d6Z3lsZnB4aWNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3NTQxODAsImV4cCI6MjA5MjMzMDE4MH0.pIkEPVLZrPTmxldJHnWKbnXSugVDZVdzNiysMHO4ijo';
   var KURULU  = SB_URL.indexOf('__') !== 0 && SB_ANON.indexOf('__') !== 0;
 
-  var f = document.getElementById('f');
-  var email = document.getElementById('email');
-  var go = document.getElementById('go');
   var err = document.getElementById('err');
-  var seg = document.getElementById('seg');
-  var secilenPlatform = '';
+  var f = document.getElementById('f');
+  var go = f.querySelector('.go');
 
-  seg.addEventListener('click', function (e) {
-    var b = e.target.closest('button[data-v]');
-    if (!b) return;
-    secilenPlatform = (b.getAttribute('aria-pressed') === 'true') ? '' : b.dataset.v;
-    [].forEach.call(seg.children, function (x) {
-      x.setAttribute('aria-pressed', String(x.dataset.v === secilenPlatform));
-    });
-  });
-
-  function hata(mesaj) {
+  function hata(mesaj){
     err.textContent = mesaj;
-    err.className = 'msg bad';
+    err.classList.add('on');
     go.disabled = false;
     go.textContent = 'Join the waitlist';
   }
 
-  // Hangi platformdan geldigi: ?utm_source=instagram
-  function kaynak() {
+  function kaynak(){
     try {
       var u = new URLSearchParams(location.search);
       return (u.get('utm_source') || '').slice(0, 40).toLowerCase();
-    } catch (e) { return ''; }
+    } catch(e){ return ''; }
   }
 
-  f.addEventListener('submit', function (e) {
+  f.addEventListener('submit', function(e){
     e.preventDefault();
-    err.className = 'msg';
-
-    var deger = email.value.trim();
-    // Kasitli olarak GEVSEK dogrulama: gercek adresleri reddetmektense
-    // birkac hatali kayit kabul etmek daha ucuz.
-    if (!deger || deger.indexOf('@') < 1 || deger.indexOf('.', deger.indexOf('@')) < 0) {
+    err.classList.remove('on');
+    var mail = document.getElementById('email').value.trim();
+    if(!mail || mail.indexOf('@') < 1 || mail.indexOf('.', mail.indexOf('@')) < 0){
       hata('That email address does not look right. Mind checking it?');
-      email.focus();
       return;
     }
-
-    // 🔴 Bagli degilse BASARILI GIBI DAVRANMA. Sessizce kaybolan bir e-posta,
-    //    hic alinmamis bir e-postadan daha kotudur.
-    if (!KURULU) {
+    if(!KURULU){
       hata('Signups are not switched on yet. Please try again shortly.');
       return;
     }
@@ -250,28 +377,22 @@
         'Prefer': 'return=minimal'
       },
       body: JSON.stringify({
-        email: deger.toLowerCase(),
-        platform: secilenPlatform || null,
+        email: mail.toLowerCase(),
+        platform: secilen || null,
         utm_source: kaynak() || null
       })
-    }).then(function (r) {
-      // 409 = ayni e-posta zaten kayitli. Kullanici acisindan bu BASARIDIR;
-      // "zaten kayitlisin" demek gereksiz surtunme yaratir.
-      if (r.ok || r.status === 409) {
-        if (secilenPlatform === 'android') {
-          document.getElementById('doneMsg').textContent =
-            'We’ll email you once, when early access opens. Your Android vote is counted.';
-        }
+    }).then(function(r){
+      // 409 = ayni e-posta zaten kayitli — kullanici acisindan BASARIDIR
+      if(r.ok || r.status === 409){
         document.body.classList.add('sent');
-        window.scrollTo(0, 0);
+        window.scrollTo({ top: document.getElementById('thanks').offsetTop - 40, behavior: 'smooth' });
         return;
       }
       hata('Something went wrong on our side. Please try again in a minute.');
-    }).catch(function () {
+    }).catch(function(){
       hata('Could not reach the server. Check your connection and try again.');
     });
   });
-})();
 </script>
 </body>
 </html>
